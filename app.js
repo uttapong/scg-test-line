@@ -115,14 +115,30 @@ async function replyMessage(query, replyToken) {
       columns: carousal
     }
   };
-
-  client
-    .replyMessage(replyToken, message)
-    .then(() => {})
-    .catch(err => {
-      // error handling
-      console.log(err);
-    });
+  if (restaurants.results.length > 0) {
+    client
+      .replyMessage(replyToken, message)
+      .then(() => {})
+      .catch(err => {
+        // error handling
+        client.replyMessage(replyToken, {
+          type: "text",
+          string: "Restaurant not found"
+        });
+        console.log(err);
+      });
+  } else {
+    client
+      .replyMessage(replyToken, {
+        type: "text",
+        string: "Restaurant not found"
+      })
+      .then(() => {})
+      .catch(err => {
+        // error handling
+        console.log(err);
+      });
+  }
 }
 app.get("/", function(req, res) {
   res.send(JSON.stringify({ Hello: "World" }));
@@ -130,8 +146,8 @@ app.get("/", function(req, res) {
 app.post("/webhook", (req, res) => {
   //   console.log(req.body.events);
   const event = req.body.events[0];
-  replyMessage(event.message.text, event.replyToken);
-  console.log(event.replyToken);
+  replyMessage(encodeURI(event.message.text), event.replyToken);
+  console.log(event.message.text);
   res.send("OK");
 });
 
