@@ -55,7 +55,7 @@ async function searchRestaurant(lat, lng) {
   });
   return result;
 }
-async function replyMessage(query, userID) {
+async function replyMessage(query, replyToken) {
   const client = new line.Client({
     channelAccessToken:
       "p4iNhwyIUCEQcGqLDh+QW9WAdw/lj0landPWV/tkyBKNNwsGk33uWipPATAwBCL7PSsLgNnVd5SJcbzCyOuZg40QxyP2ZatwZcmXhWmrPwn/7OTPvlnbPlp4xeBWVD6WLjCsO/rtzxHyAv1cBfbECwdB04t89/1O/w1cDnyilFU="
@@ -117,7 +117,7 @@ async function replyMessage(query, userID) {
   };
 
   client
-    .pushMessage(userID, message)
+    .replyMessage(replyToken, message)
     .then(() => {})
     .catch(err => {
       // error handling
@@ -128,9 +128,10 @@ app.get("/", function(req, res) {
   res.send(JSON.stringify({ Hello: "World" }));
 });
 app.post("/webhook", (req, res) => {
-  console.log(req.body);
+  //   console.log(req.body.events);
   const event = req.body.events[0];
-  replyMessage(events.message.text, event.replyToken);
+  replyMessage(event.message.text, event.replyToken);
+  console.log(event.replyToken);
   res.send("OK");
 });
 
