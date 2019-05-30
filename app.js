@@ -123,7 +123,7 @@ async function replyMessage(query, replyToken) {
         // error handling
         client.replyMessage(replyToken, {
           type: "text",
-          string: "Restaurant not found"
+          text: "Restaurant not found"
         });
         console.log(err);
       });
@@ -131,7 +131,7 @@ async function replyMessage(query, replyToken) {
     client
       .replyMessage(replyToken, {
         type: "text",
-        string: "Restaurant not found"
+        text: "Restaurant not found"
       })
       .then(() => {})
       .catch(err => {
