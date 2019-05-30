@@ -129,8 +129,8 @@ app.get("/", function(req, res) {
 });
 app.post("/webhook", (req, res) => {
   console.log(req.body);
-  //   const event = req.body.events[0];
-  //   replyMessage(events.message.text, event.replyToken);
+  const event = req.body.events[0];
+  replyMessage(events.message.text, event.replyToken);
   res.send("OK");
 });
 
