@@ -127,7 +127,7 @@ async function replyMessage(query, userID) {
 app.get("/", function(req, res) {
   res.send(JSON.stringify({ Hello: "World" }));
 });
-app.get("/webhook", (req, res) => {
+app.post("/webhook", (req, res) => {
   console.log(req.body);
   //   const event = req.body.events[0];
   //   replyMessage(events.message.text, event.replyToken);
