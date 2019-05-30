@@ -4,7 +4,7 @@ const mapKey = "AIzaSyCQWpAtVowR7C1BRlml8_LeRMWSpKUZ1HQ";
 const endPoint = "https://maps.googleapis.com/maps/api/place/";
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 80;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 // client.replyMessage('<to>', message)
