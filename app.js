@@ -124,7 +124,9 @@ async function replyMessage(query, userID) {
       console.log(err);
     });
 }
-
+app.get("/", function(req, res) {
+  res.send(JSON.stringify({ Hello: "World" }));
+});
 app.get("/webhook", (req, res) => {
   console.log(req.body.destination);
   const event = req.body.events[0];

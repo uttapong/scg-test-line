@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "node app.js",
-    "start": "pm2-runtime server/server.js -i max",
+    "start": "node app.js",
     "test": "env-cmd .env.dev jest"
   },
   "author": "uttapong ruangrit",
