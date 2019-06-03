@@ -73,6 +73,7 @@ async function replyMessage(query, replyToken) {
         },${value.geometry.location.lng}&query_place_id=${value.id}`
       )
     );
+    let rating = value.rating ? value.rating : "-";
     return {
       thumbnailImageUrl:
         value.photos && value.photos[0]
@@ -82,7 +83,7 @@ async function replyMessage(query, replyToken) {
           : value.icon,
       imageBackgroundColor: "#FFFFFF",
       title: value.name,
-      text: `Rating ${value.rating}`,
+      text: `Rating ${rating}`,
       defaultAction: {
         type: "uri",
         label: "View",
