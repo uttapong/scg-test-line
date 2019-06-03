@@ -7,13 +7,14 @@ const app = express();
 const port = process.env.PORT || 80;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-// client.replyMessage('<to>', message)
-//   .then(() => {
 
-//   })
-//   .catch((err) => {
-//     // error handling
-//   });
+/*
+ * Call Google Place API to retrieve lat,lng from keyword using findplacefromtext function
+ *
+ * @param {string} searchLocation search location string
+ * @param {Object} place object include lat,lng information
+ *
+ */
 async function searchLocation(searchLocation) {
   const result = await new Promise((resolve, reject) => {
     axios
@@ -23,9 +24,7 @@ async function searchLocation(searchLocation) {
       .then(function(response) {
         if (response.data.candidates.length > 0) {
           const resultLatLng = response.data.candidates[0].geometry.location;
-          //   console.log(resultLatLng);
-          // if(!$resultLatLng)
-          //     return new JsonModel(['status'=>-1,"message"=>"Location not found"]);
+
           resolve(resultLatLng);
         }
         resolve(false);
@@ -38,6 +37,14 @@ async function searchLocation(searchLocation) {
   return result;
 }
 
+/*
+ * Call Google Place API to retrieve list of restaurant from keyword using nearbysearch function
+ *
+ * @param {string} lat location latitude to search for restaurant
+ * @param {string} lng location longitude to search for restaurant
+ * @param {Object[]} list of restaurant object coresponded for search location
+ *
+ */
 async function searchRestaurant(lat, lng) {
   const result = await new Promise((resolve, reject) => {
     axios
@@ -45,9 +52,7 @@ async function searchRestaurant(lat, lng) {
         `${endPoint}nearbysearch/json?location=${lat},${lng}&radius=1500&type=restaurant&key=${mapKey}`
       )
       .then(function(response) {
-        // handle success
         resolve(response.data);
-        //   console.log(response.data.results);
       })
       .catch(function(error) {
         reject(error);
@@ -55,16 +60,23 @@ async function searchRestaurant(lat, lng) {
   });
   return result;
 }
+
+/*
+ * function responsible for create LINE Message response from restaturant object
+ *
+ * @param {string} query search location string
+ * @param {string} replyToken client's token inwhich message is called
+ * @param {Object} Object message in LINE Message format to send to LINE webhook client
+ *
+ */
 async function replyMessage(query, replyToken) {
   const client = new line.Client({
     channelAccessToken:
       "p4iNhwyIUCEQcGqLDh+QW9WAdw/lj0landPWV/tkyBKNNwsGk33uWipPATAwBCL7PSsLgNnVd5SJcbzCyOuZg40QxyP2ZatwZcmXhWmrPwn/7OTPvlnbPlp4xeBWVD6WLjCsO/rtzxHyAv1cBfbECwdB04t89/1O/w1cDnyilFU="
   });
   let loc = await searchLocation(query);
-  //   console.log(loc);
   let restaurants = await searchRestaurant(loc.lat, loc.lng);
 
-  //   console.log(restaurants);
   const carousal = restaurants.results.slice(0, 5).map((value, index) => {
     console.log(
       encodeURI(
@@ -106,7 +118,6 @@ async function replyMessage(query, replyToken) {
       ]
     };
   });
-  //   return;
 
   const message = {
     type: "template",
@@ -136,19 +147,17 @@ async function replyMessage(query, replyToken) {
       })
       .then(() => {})
       .catch(err => {
-        // error handling
         console.log(err);
       });
   }
 }
-app.get("/", function(req, res) {
-  res.send(JSON.stringify({ Hello: "World" }));
-});
+
+/*
+ * Express url route endpoint for LINE webhook used to searching for restaurant from input location
+ */
 app.post("/webhook", (req, res) => {
-  //   console.log(req.body.events);
   const event = req.body.events[0];
   replyMessage(encodeURI(event.message.text), event.replyToken);
-  console.log(event.message.text);
   res.send("OK");
 });
 
